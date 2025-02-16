@@ -28,4 +28,14 @@ final class Website
     {
         return $this->config;
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function get(string $key): mixed
+    {
+        return $this->config[$key] ?? null;
+    }
 }

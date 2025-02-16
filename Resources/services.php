@@ -6,6 +6,7 @@ use WebMachine\Request\RequestHandler;
 use WebMachine\Request\RequestHandlerInterface;
 use WebMachine\Runner\RunnerDelegator;
 use WebMachine\Runner\RunnerInterface;
+use WebMachine\Runner\StaticRunner;
 use WebMachine\WebsiteDelegator;
 
 return static function(ContainerConfigurator $container) {
@@ -30,5 +31,8 @@ return static function(ContainerConfigurator $container) {
         ->alias(RequestHandlerInterface::class, 'webmachine.request_handler')
         ->alias(RunnerInterface::class, 'webmachine.runner.delagator')
         ->alias(WebsiteDelegator::class, 'webmachine.website_delegator')
+
+        ->set('webmachine.runner.static', StaticRunner::class)
+            ->tag('webmachine.runner')
     ;
 };

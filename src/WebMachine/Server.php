@@ -8,15 +8,23 @@ use WebMachine\WebMachine\Exception\UnableToCreateServerException;
 final class Server
 {
     private \Socket $socket;
+    private bool $running = false;
 
     public function __construct(
         private RequestHandlerInterface $requestHandler
-    ) {
-    }
+    ) {}
 
     public function start(): never
     {
+        if ($this->running) {
+            throw new \RuntimeException('Server is already running');
+        }
+
+        $this->running = true;
         $this->init('localhost', 8081);
+
+        register_shutdown_function(fn () => $this->stop());
+
         $this->run();
     }
 
@@ -36,6 +44,7 @@ final class Server
         }
 
         socket_set_nonblock($this->socket);
+        socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
     }
 
     private function run(): void
@@ -56,5 +65,17 @@ final class Server
             socket_write($client, $response);
             socket_close($client);
         }
+    }
+
+    private function stop(): void
+    {
+        if (!$this->running) {
+            throw new \RuntimeException('Server is not running');
+        }
+
+        socket_close($this->socket);
+        $this->running = false;
+
+        exit(1);
     }
 }

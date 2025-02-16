@@ -3,4 +3,4 @@ default:
   port: 8080
 
   type: static
-  root: "public" 
+  root: "tests" 

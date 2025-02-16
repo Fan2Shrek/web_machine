@@ -21,7 +21,7 @@ final class WebsiteDelegator
     {
         foreach ($this->websites as $website) {
             if ($request->getHost() === $website->getHost()) {
-                $this->doHandleRequest($website, $request);
+                return $this->doHandleRequest($website, $request);
             }
         }
 

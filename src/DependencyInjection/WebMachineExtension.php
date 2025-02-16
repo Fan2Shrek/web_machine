@@ -39,6 +39,7 @@ final class WebMachineExtension extends Extension
         $this->container->setParameter('web_machine.website_folder', $websiteFolder);
 
         $finder = new Finder();
+        $websites = [];
 
         foreach ($finder->files()->in($websiteFolder)->name('*.yaml') as $file) {
             $config = Yaml::parse($file->getContents());
@@ -49,7 +50,8 @@ final class WebMachineExtension extends Extension
             $website = new Definition(Website::class, [$name, $config['host'], $config['port'], $config]);
             $website->addTag('webmachine.website');
 
-            $this->container->set('webmachine.website.'.$name, $website);
+            $websites['webmachine.website.'.$name] = $website;
         }
+        $this->container->addDefinitions($websites);
     }
 }

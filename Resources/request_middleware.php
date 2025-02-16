@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use WebMachine\Request\Middleware\AdaptRequestMiddleware;
 use WebMachine\Request\Middleware\CreateResponseMiddleware;
 use WebMachine\Request\Middleware\WebsiteDelagatorMiddleware;
 
@@ -15,5 +16,8 @@ return static function(ContainerConfigurator $container) {
                 service('webmachine.website_delegator'),
             ])
             ->tag('webmachine.request_middleware', ['priority' => 0])
+
+        ->set('webmachine.request_middleware.adapt_request', AdaptRequestMiddleware::class)
+            ->tag('webmachine.request_middleware', ['priority' => 50])
     ;
 };
