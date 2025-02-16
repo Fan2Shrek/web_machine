@@ -8,10 +8,11 @@ use WebMachine\Request\Middleware\MiddlewareStack;
 
 final class RequestHandler implements RequestHandlerInterface
 {
-
-
+    /**
+     * @param iterable<Middleware> $middlewares
+     */
     public function __construct(
-        private array $middlewares = []
+        private iterable $middlewares = []
     ) {
     }
 
@@ -28,6 +29,6 @@ final class RequestHandler implements RequestHandlerInterface
     {
         $stack = new MiddlewareStack($this->middlewares);
 
-        return $stack->next()->process($request);
+        return $stack->next()->process($request, $stack);
     }
 }

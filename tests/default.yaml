@@ -1,0 +1,6 @@
+default:
+  host: "localhost"
+  port: 8080
+
+  type: static
+  root: "public" 

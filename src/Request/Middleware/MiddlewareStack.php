@@ -2,28 +2,42 @@
 
 namespace WebMachine\Request\Middleware;
 
+/**
+* @todo refactor
+*/
 final class MiddlewareStack
 {
-    private int $index = 0;
+    private \Iterator $middlewares;
 
-    /**
-     * @param MiddlewareInterface[] $middlewares
-     */
-    public function __construct(private array $middlewares = [])
-    {
+    public function __construct(
+        iterable $middlewares = [],
+    ) {
+        $this->middlewares = $middlewares->getIterator();
     }
 
     public function next(): MiddlewareInterface
     {
-        if (!isset($this->middlewares[$this->index])) {
-            throw new \RuntimeException('No more middlewares to process');
+        if ($this->isLast()) {
+            throw new \RuntimeException('No more middleware to process.');
         }
 
-        return $this->middlewares[$this->index++];
+        $this->middlewares->next();
+
+        return $this->middlewares->current();
+    }
+
+    public function isLast(): bool
+    {
+        return !$this->middlewares->valid();
     }
 
     public function reset(): void
     {
-        $this->index = 0;
+        $this->middlewares->rewind();
+    }
+
+    public function current(): MiddlewareInterface
+    {
+        return $this->middlewares->current();
     }
 }

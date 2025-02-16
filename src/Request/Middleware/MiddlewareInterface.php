@@ -9,5 +9,5 @@ use Symfony\Component\HttpFoundation\Response;
 
 interface MiddlewareInterface
 {
-    public function process(Request $request): Response;
+    public function process(Request $request, MiddlewareStack $stack): Response;
 }

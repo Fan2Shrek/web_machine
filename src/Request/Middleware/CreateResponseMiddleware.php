@@ -7,8 +7,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class CreateResponseMiddleware implements MiddlewareInterface
 {
-    public function process(Request $request): Response
+    public function process(Request $request, MiddlewareStack $stack): Response
     {
-        return new Response('Hello World!');
+        new Response('Hello World!');
+
+        return $stack->next($request)->process($request, $stack);
     }
 }
