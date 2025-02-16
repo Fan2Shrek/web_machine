@@ -26,7 +26,7 @@ final class WebMachineExtension extends Extension
 
         $container->setParameter('web_machine.website_folder', $config['website_folder']);
 
-        $loader = new PhpFileLoader($container, new FileLocator(dirname(__DIR__, 2).'/Resources'));
+        $loader = new PhpFileLoader($container, new FileLocator(dirname(__DIR__, 2).'/Resources/config'));
 
         $loader->load('services.php');
         $loader->load('request_middleware.php');

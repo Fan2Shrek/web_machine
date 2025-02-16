@@ -21,7 +21,7 @@ final class Server
         }
 
         $this->running = true;
-        $this->init('localhost', 8081);
+        $this->init('localhost', 8080);
 
         register_shutdown_function(fn () => $this->stop());
 

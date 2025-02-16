@@ -17,21 +17,17 @@ final class StaticRunner implements RunnerInterface
         $response = new Response();
 
         if (!$fs->exists($root = $website->get('root'))) {
-            // @todo maybe log or throw an exception
-            $response->setStatusCode(404);
-            $response->setContent('Not Found');
-
-            return $response;
+            return $this->renderNotFound($response);
         }
 
         $file = $root.$request->getPathInfo();
-        $fs->touch($file);
+
+        if ($fs->exists($file) && is_dir($file)) {
+            $file = rtrim($file, '/').'/index.html';
+        }
 
         if (!$fs->exists($file)) {
-            $response->setStatusCode(404);
-            $response->setContent('Not Found');
-
-            return $response;
+            return $this->renderNotFound($response);
         }
 
         $response->setContent(file_get_contents($file) ?? '');
@@ -42,5 +38,13 @@ final class StaticRunner implements RunnerInterface
     public function supports(Website $website): bool
     {
         return true;
+    }
+
+    private function renderNotFound(Response $response): Response
+    {
+        $response->setStatusCode(404);
+        $response->setContent(file_get_contents(__DIR__.'/../../Resources/page/404.html') ?? '');
+
+        return $response;
     }
 }
