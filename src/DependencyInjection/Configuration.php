@@ -19,6 +19,9 @@ final class Configuration implements ConfigurationInterface
                 ->stringNode('website_folder')
                     ->defaultValue('tests') // @todo change
                 ->end()
+                ->booleanNode('log')
+                    ->defaultTrue()
+                ->end()
             ->end();
 
         return $treeBuilder;

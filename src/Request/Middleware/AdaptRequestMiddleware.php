@@ -15,7 +15,7 @@ final class AdaptRequestMiddleware implements MiddlewareInterface
     public function process(Request $request, MiddlewareStack $stack): Response
     {
         $content = $request->getContent();
-        $lines = explode("\r\n", $content); 
+        $lines = explode("\r\n", $content);
 
         [$method, $uri, $protocol] = explode(' ', array_shift($lines));
         $params = parse_url($uri, PHP_URL_QUERY);
@@ -48,7 +48,7 @@ final class AdaptRequestMiddleware implements MiddlewareInterface
             $body,
         );
 
-        $request->setMethod($method) ;
+        $request->setMethod($method);
 
         return $stack->next()->process($request, $stack);
     }

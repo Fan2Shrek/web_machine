@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebMachine;
 
+use WebMachine\WebsiteGuesser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use WebMachine\Config\Website;
@@ -13,16 +14,16 @@ final class WebsiteDelegator
 {
     public function __construct(
         private RunnerInterface $runner,
-        private iterable $websites = [],
+        private WebsiteGuesser $websiteGuesser,
     ) {
     }
 
     public function handleRequest(Request $request): Response
     {
-        foreach ($this->websites as $website) {
-            if ($request->getHost() === $website->getHost()) {
-                return $this->doHandleRequest($website, $request);
-            }
+        $website = $this->websiteGuesser->guessWebsite($request);
+
+        if (null !== $website) {
+            return $this->doHandleRequest($website, $request);
         }
 
         // @todo maybe UnknowHostException

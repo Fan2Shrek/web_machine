@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use WebMachine\WebsiteGuesser;
 use WebMachine\Request\RequestHandler;
 use WebMachine\Request\RequestHandlerInterface;
 use WebMachine\Runner\RunnerDelegator;
@@ -16,10 +17,15 @@ return static function(ContainerConfigurator $container) {
                 tagged_iterator('webmachine.runner'),
             ])
 
+        ->set('webmachine.website_guesser', WebsiteGuesser::class)
+            ->args([
+                tagged_iterator('webmachine.website'),
+            ])
+
         ->set('webmachine.website_delegator', WebsiteDelegator::class)
             ->args([
                 service('webmachine.runner.delagator'),
-                tagged_iterator('webmachine.website'),
+                service('webmachine.website_guesser'),
             ])
 
         ->set('webmachine.request_handler', RequestHandler::class)

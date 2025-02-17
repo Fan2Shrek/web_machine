@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WebMachine\DependencyInjection;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -13,9 +15,15 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 use WebMachine\Config\Website;
 
+// @todo: see config denormalization ??
 final class WebMachineExtension extends Extension
 {
     private ContainerBuilder $container;
+
+    /**
+     * @var Definition[]
+     */
+    private array $loggers = [];
 
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -51,7 +59,24 @@ final class WebMachineExtension extends Extension
             $website->addTag('webmachine.website');
 
             $websites['webmachine.website.'.$name] = $website;
+
+            $this->registerLoggers($name, $config);
         }
+
         $this->container->addDefinitions($websites);
+        $this->container->addDefinitions($this->loggers);
+    }
+
+    private function registerLoggers(string $name, array $config): void
+    {
+        if (isset($config['log_file'])) {
+            $file = $config['log_file'];
+
+            $definition = new Definition(Logger::class, [$name]);
+            $definition->addTag('webmachine.logger');
+            $definition->addMethodCall('pushHandler', [new Definition(StreamHandler::class, [$file])]);
+
+            $this->container->setDefinition('webmachine'.$name.'.logger', $definition);
+        }
     }
 }

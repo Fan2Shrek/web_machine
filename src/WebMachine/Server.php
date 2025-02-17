@@ -23,7 +23,7 @@ final class Server
         $this->running = true;
         $this->init('localhost', 8080);
 
-        register_shutdown_function(fn () => $this->stop());
+        register_shutdown_function(fn() => $this->stop());
 
         $this->run();
     }
@@ -35,6 +35,8 @@ final class Server
             throw new \RuntimeException('Failed to create socket: ' . socket_strerror(socket_last_error()));
         }
 
+        socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
+
         if (!socket_bind($this->socket, $host, $port)) {
             throw new UnableToCreateServerException('Failed to bind socket: ' . socket_strerror(socket_last_error()));
         }
@@ -44,7 +46,6 @@ final class Server
         }
 
         socket_set_nonblock($this->socket);
-        socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
     }
 
     private function run(): void
@@ -56,11 +57,16 @@ final class Server
             }
 
             $request = socket_read($client, 1024);
-            if ($request === false) {
+            if ($request === false || $request === '') {
                 continue;
             }
 
-            $response = $this->requestHandler->handleRawRequest($request);
+            try {
+                $response = $this->requestHandler->handleRawRequest($request);
+            } catch (\Throwable $e) {
+                echo 'Error: ' . $e->getMessage() . PHP_EOL;
+                $this->stop();
+            }
 
             socket_write($client, $response);
             socket_close($client);
@@ -70,7 +76,7 @@ final class Server
     private function stop(): void
     {
         if (!$this->running) {
-            throw new \RuntimeException('Server is not running');
+            return;
         }
 
         socket_close($this->socket);

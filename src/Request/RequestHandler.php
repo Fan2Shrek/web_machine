@@ -29,6 +29,6 @@ final class RequestHandler implements RequestHandlerInterface
     {
         $stack = new MiddlewareStack($this->middlewares);
 
-        return $stack->next()->process($request, $stack);
+        return $stack->current()->process($request, $stack);
     }
 }

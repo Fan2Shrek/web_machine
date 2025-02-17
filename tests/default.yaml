@@ -4,3 +4,4 @@ default:
 
   type: static
   root: "tests" 
+  log_file: "logs/server.log"
