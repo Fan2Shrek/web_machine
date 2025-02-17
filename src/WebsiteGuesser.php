@@ -7,13 +7,13 @@ namespace WebMachine;
 use Symfony\Component\HttpFoundation\Request;
 use WebMachine\Config\Website;
 
-final class WebsiteGuesser
+class WebsiteGuesser
 {
     /**
      * @param iterable<Website> $websites
      */
     public function __construct(
-        private iterable $websites = [],
+        protected iterable $websites = [],
     ) {
     }
 

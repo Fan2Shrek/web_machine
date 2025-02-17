@@ -5,20 +5,10 @@ declare(strict_types=1);
 namespace WebMachine\Tests\Middleware;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use WebMachine\Request\Middleware\AdaptRequestMiddleware;
-use WebMachine\Request\Middleware\MiddlewareInterface;
-use WebMachine\Request\Middleware\MiddlewareStack;
-use WebMachine\Tests\RequestTestTrait;
 
-final class AdaptRequestMiddlewareTest extends TestCase
+final class AdaptRequestMiddlewareTest extends MiddlewareTestCase
 {
-    use RequestTestTrait;
-
-    private MiddlewareInterface $middleware;
-
     #[DataProvider('providePopulateMethod')]
     public function testPopulateMethod(string $method): void
     {
@@ -115,32 +105,8 @@ final class AdaptRequestMiddlewareTest extends TestCase
         yield 'with data' => ['Hello World!'];
     }
 
-    protected function processRequest(Request $request): void
-    {
-        $this->getMiddleware()->process($request, new MiddlewareStack(new MiddlewareIterator($this->getMiddleware())));
-    }
-
     protected function getMiddleware(): AdaptRequestMiddleware
     {
         return $this->middleware ??= new AdaptRequestMiddleware();
-    }
-}
-
-class MiddlewareIterator implements \IteratorAggregate
-{
-    public function __construct(private MiddlewareInterface $middleware)
-    {
-    }
-
-    public function getIterator(): \Traversable
-    {
-        yield $this->middleware;
-
-        yield new class implements MiddlewareInterface {
-            public function process(Request $request, MiddlewareStack $stack): Response
-            {
-                return new Response();
-            }
-        };
     }
 }

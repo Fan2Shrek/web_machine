@@ -19,5 +19,10 @@ trait RequestTestTrait
     {
         return new Request(content: $this->createRawRequest($uri, $method, $query, $request, $server, $body));
     }
+
+    protected function createRealRequest(string $uri = '/', string $method = 'GET', array $query = [], array $request = [], array $server = [], string $body = ''): Request
+    {
+        return Request::create($uri, $method, $query, [], [], $server, $body);
+    }
 }
 

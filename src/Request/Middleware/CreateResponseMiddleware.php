@@ -9,8 +9,12 @@ final class CreateResponseMiddleware implements MiddlewareInterface
 {
     public function process(Request $request, MiddlewareStack $stack): Response
     {
-        new Response('Hello World!');
+        $response = $stack->next($request)->process($request, $stack);
 
-        return $stack->next($request)->process($request, $stack);
+        if (null === $response->getContent()) {
+            $response = new Response('Default response');
+        }
+
+        return $response;
     }
 }
