@@ -32,6 +32,8 @@ final class StaticRunner implements RunnerInterface
 
         $response->setContent(file_get_contents($file) ?? '');
 
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+
         return $response;
     }
 

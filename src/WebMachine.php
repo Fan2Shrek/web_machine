@@ -4,14 +4,15 @@ namespace WebMachine;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use WebMachine\DependencyInjection\Compiler\TagRFCPass;
 use WebMachine\DependencyInjection\WebMachineExtension;
-use WebMachine\Request\Middleware;
-use WebMachine\Request\RequestHandler;
-use WebMachine\Request\RequestHandlerInterface;
 use WebMachine\WebMachine\Server;
 
 final class WebMachine
 {
+    public const VERSION = '1.0.0-beta';
+    public const VERSION_NAME = 'Sunny Beta';
+
     private static self $instance;
 
     private Server $server;
@@ -46,6 +47,7 @@ final class WebMachine
     {
         $builder = new ContainerBuilder();
         $builder->registerExtension(new WebMachineExtension);
+        $builder->addCompilerPass(new TagRFCPass);
         $builder->loadFromExtension('web_machine', []);
 
         $builder->compile();

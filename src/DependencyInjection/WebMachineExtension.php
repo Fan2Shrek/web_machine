@@ -38,6 +38,7 @@ final class WebMachineExtension extends Extension
 
         $loader->load('services.php');
         $loader->load('request_middleware.php');
+        $loader->load('rfc.php');
 
         $this->parseWebsites($config['website_folder']);
     }

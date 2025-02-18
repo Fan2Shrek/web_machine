@@ -6,6 +6,7 @@ use WebMachine\Request\Middleware\AdaptRequestMiddleware;
 use WebMachine\Request\Middleware\AddAttributeMiddleware;
 use WebMachine\Request\Middleware\CreateResponseMiddleware;
 use WebMachine\Request\Middleware\LogMiddleware;
+use WebMachine\Request\Middleware\RFCMiddleware;
 use WebMachine\Request\Middleware\WebsiteDelagatorMiddleware;
 
 return static function(ContainerConfigurator $container) {
@@ -27,6 +28,13 @@ return static function(ContainerConfigurator $container) {
 
         ->set('webmachine.request_middleware.create_response', CreateResponseMiddleware::class)
             ->tag('webmachine.request_middleware', ['priority' => 100])
+
+        ->set('webmachine.request_middleware.rfc', RFCMiddleware::class)
+            ->args([
+                tagged_iterator('webmachine.request_rfc'),
+                tagged_iterator('webmachine.response_rfc'),
+            ])
+            ->tag('webmachine.request_middleware', ['priority' => 400])
 
         ->set('webmachine.request_middleware.website_delegator', WebsiteDelagatorMiddleware::class)
             ->args([
