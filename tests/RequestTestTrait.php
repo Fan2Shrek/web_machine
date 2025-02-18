@@ -24,5 +24,18 @@ trait RequestTestTrait
     {
         return Request::create($uri, $method, $query, [], [], $server, $body);
     }
+
+    protected function createResquestFromUri(string $uri, string $method = 'GET'): Request
+    {
+        $info = parse_url($uri);
+
+        return  $this->createRealRequest(
+            $info['path'] ?? '/',
+            $method,
+            server: [
+                'HTTP_HOST' => $info['host'],
+            ]
+        );
+    }
 }
 
